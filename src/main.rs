@@ -17,7 +17,7 @@ fn test1(bits: &[u32]) -> bool {
             }
         }
     }
-    println!("{}", ones);
+    //println!("{}", ones);
     9654 <= ones && ones <= 10346
 }
 
@@ -44,7 +44,7 @@ fn test2(bits: &[u32]) -> bool {
 
     max_zeros = max_zeros.max(current_zeros);
     max_ones = max_ones.max(current_ones);
-    println!("Max: {}, {}", max_ones, max_zeros);
+    //println!("Max: {}, {}", max_ones, max_zeros);
 
     max_zeros <= 36 && max_ones <= 36
 
@@ -57,17 +57,14 @@ fn test3(bits: &[u32]) -> bool {
     for byte4 in bits {
         for i in 0..8 {
             mas[((byte4 << 4*i) >> 28)as usize] += 1;
-            //print!("{} ",(byte4 << 4*i) >> 28);
         }
-        //println!("\n{:?}", mas);
     }
     let mut sum = 0f32;
     for x in mas.iter() {
         sum += (x * x) as f32;
     }
-    //println!("{}", sum);
     let x3:f32 = (16.0 / (8.0 * bits.len() as f32)) * sum - (8 * bits.len()) as f32;
-    println!("{}", x3);
+    //println!("{}", x3);
     1.03 <= x3 && x3 <= 57.4
 }
 
@@ -101,7 +98,7 @@ fn test4(bits: &[u32]) -> bool {
     if current_zeros > 0 {
         mas_zeros[if current_zeros > 5 {5} else {current_zeros - 1}] += 1;
     }
-    println!("{:?}, {:?}", mas_ones, mas_zeros);
+    //println!("{:?}, {:?}", mas_ones, mas_zeros);
     if  !(2267 <= mas_ones[0] && mas_ones[0] <= 2733) ||
         !(2267 <= mas_zeros[0] && mas_zeros[0] <= 2733) ||
         !(1079 <= mas_ones[1] && mas_ones[1] <= 1421) ||
@@ -114,19 +111,34 @@ fn test4(bits: &[u32]) -> bool {
         !(90 <= mas_zeros[4] && mas_zeros[4] <= 223) ||
         !(90 <= mas_ones[5] && mas_ones[5] <= 223) ||
         !(90 <= mas_zeros[5] && mas_zeros[5] <= 223) {
-        return false;
+        false
+    } else {
+        true
     }
-    true
+}
 
+fn test(bits: &[u32]) -> bool {
+    if test1(&bits) && test2(&bits) && test3(&bits) && test4(&bits) {
+        true
+    } else {
+        false
+    }
 }
 
 fn main() {
-    let random_bits = generate_random_bits(20_000);
+    let len = 20_000;
+    let random_bits = generate_random_bits(len);
 
-    println!("{:?}", test1(&random_bits));
+    if test(&random_bits) {
+        println!("This binary sequence of {} bits is sufficiently random", len);
+    } else {
+        println!("This binary sequence of {} bits is NOT sufficiently random", len);
+    }
+
+    /*println!("{:?}", test1(&random_bits));
     println!("{:?}", test2(&random_bits));
     println!("{:?}", test3(&random_bits));
-    println!("{:?}", test4(&random_bits));
+    println!("{:?}", test4(&random_bits));*/
 
     /*for byte4 in &random_bits {
            print!("\n{:032b}", byte4);
