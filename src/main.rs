@@ -71,6 +71,54 @@ fn test3(bits: &[u32]) -> bool {
     1.03 <= x3 && x3 <= 57.4
 }
 
+fn test4(bits: &[u32]) -> bool {
+    let mut mas_zeros = [0u32; 6];
+    let mut mas_ones = [0u32; 6];
+
+    let mut current_zeros = 0;
+    let mut current_ones = 0;
+
+    for byte4 in bits {
+        for i in 0..32 {
+            if byte4 & (1 << i) != 0 {
+                current_ones += 1;
+                if current_zeros > 0 {
+                    mas_zeros[if current_zeros > 5 {5} else {current_zeros - 1}] += 1;
+                }
+                current_zeros = 0;
+            } else {
+                current_zeros += 1;
+                if current_ones > 0 {
+                    mas_ones[if current_ones > 5 {5} else {current_ones - 1}] += 1;
+                }
+                current_ones = 0;
+            }
+        }
+    }
+    if current_ones > 0 {
+        mas_ones[if current_ones > 5 {5} else {current_ones - 1}] += 1;
+    }
+    if current_zeros > 0 {
+        mas_zeros[if current_zeros > 5 {5} else {current_zeros - 1}] += 1;
+    }
+    println!("{:?}, {:?}", mas_ones, mas_zeros);
+    if  !(2267 <= mas_ones[0] && mas_ones[0] <= 2733) ||
+        !(2267 <= mas_zeros[0] && mas_zeros[0] <= 2733) ||
+        !(1079 <= mas_ones[1] && mas_ones[1] <= 1421) ||
+        !(1079 <= mas_zeros[1] && mas_zeros[1] <= 1421) ||
+        !(502 <= mas_ones[2] && mas_ones[2] <= 748) ||
+        !(502 <= mas_zeros[2] && mas_zeros[2] <= 748) ||
+        !(223 <= mas_ones[3] && mas_ones[3] <= 402) ||
+        !(223 <= mas_zeros[3] && mas_zeros[3] <= 402) ||
+        !(90 <= mas_ones[4] && mas_ones[4] <= 223) ||
+        !(90 <= mas_zeros[4] && mas_zeros[4] <= 223) ||
+        !(90 <= mas_ones[5] && mas_ones[5] <= 223) ||
+        !(90 <= mas_zeros[5] && mas_zeros[5] <= 223) {
+        return false;
+    }
+    true
+
+}
 
 fn main() {
     let random_bits = generate_random_bits(20_000);
@@ -78,6 +126,8 @@ fn main() {
     println!("{:?}", test1(&random_bits));
     println!("{:?}", test2(&random_bits));
     println!("{:?}", test3(&random_bits));
+    println!("{:?}", test4(&random_bits));
+
     /*for byte4 in &random_bits {
            print!("\n{:032b}", byte4);
     }*/
